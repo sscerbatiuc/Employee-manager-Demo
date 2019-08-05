@@ -15,11 +15,14 @@ import javax.swing.table.DefaultTableModel;
  */
 public class App extends javax.swing.JFrame {
 
+    DefaultTableModel tableModel;
+
     /**
      * Creates new form App
      */
     public App() {
         initComponents();
+        tableModel = (DefaultTableModel) this.empTable.getModel();
     }
 
     /**
@@ -139,7 +142,7 @@ public class App extends javax.swing.JFrame {
         addDialog.setVisible(true);
         Employee emp = addDialog.getResult();
         DefaultTableModel tableModel = (DefaultTableModel) this.empTable.getModel();
-        tableModel.addRow(new Object[]{this.empTable.getRowCount() + 1 , emp.getName(), emp.getSurname(), emp.getIdnp()});
+        tableModel.addRow(new Object[]{this.empTable.getRowCount() + 1, emp.getName(), emp.getSurname(), emp.getIdnp()});
         // transmit la employee service
         // TODO
     }//GEN-LAST:event_addBtnActionPerformed
@@ -159,11 +162,32 @@ public class App extends javax.swing.JFrame {
         // delete from employee service
     }//GEN-LAST:event_delBtnActionPerformed
 
-    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
-        // TODO
-        System.out.println("Edit should happen");
-    }//GEN-LAST:event_editBtnActionPerformed
+    public int selectedRow() {
+        DefaultTableModel tableModel = (DefaultTableModel) this.empTable.getModel();
+        int selectedRow = this.empTable.getSelectedRow();
+        return selectedRow;
+    }
 
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+        // 0. Vedem care rand este selectat
+        int selectedRow = this.selectedRow();
+        // 0.1 Luam datele de pe randul respectiv.
+        Employee emp = new Employee();
+        emp.setName(tableModel.getValueAt(selectedRow, 1).toString());
+        emp.setSurname(tableModel.getValueAt(selectedRow, 2).toString());
+        emp.setIdnp(tableModel.getValueAt(selectedRow, 3).toString());
+
+        // 0.2 Impachetam datele intrun obiect de tip Employee.
+        // 1. Afisam dialogul de editare.
+        EditDialog editDialog = new EditDialog(this, true, emp);
+        editDialog.setVisible(true);
+        
+        // Citim valoarea modificata
+        Employee editedEmployee = editDialog.getResult();
+        
+        // Verificam daca s-au schimbat valorile
+         
+    }//GEN-LAST:event_editBtnActionPerformed
 
     /**
      * @param args the command line arguments

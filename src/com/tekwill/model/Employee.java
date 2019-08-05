@@ -15,6 +15,10 @@ public class Employee {
     private String surname;
     private String idnp;
 
+    public Employee() {
+
+    }
+
     public Employee(String name, String surname, String idnp) {
         this.name = name;
         this.surname = surname;
@@ -49,7 +53,5 @@ public class Employee {
     public String toString() {
         return "Employee{" + "name=" + name + ", surname=" + surname + ", idnp=" + idnp + '}';
     }
-    
-    
 
 }
