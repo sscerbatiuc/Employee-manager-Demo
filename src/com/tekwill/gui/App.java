@@ -62,6 +62,11 @@ public class App extends javax.swing.JFrame {
         });
 
         editBtn.setText("Edit");
+        editBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBtnActionPerformed(evt);
+            }
+        });
 
         delBtn.setText("Delete");
         delBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -129,12 +134,14 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        // creez un employee nou
-        Employee emp = this.generateRandomEmployee();
+        boolean isModal = true;
+        AddDialog addDialog = new AddDialog(this, isModal);
+        addDialog.setVisible(true);
+        Employee emp = addDialog.getResult();
         DefaultTableModel tableModel = (DefaultTableModel) this.empTable.getModel();
-        int count = tableModel.getRowCount();
-        tableModel.addRow(new Object[]{count + 1, emp.getName(), emp.getSurname(), emp.getIdnp()});
+        tableModel.addRow(new Object[]{this.empTable.getRowCount() + 1 , emp.getName(), emp.getSurname(), emp.getIdnp()});
         // transmit la employee service
+        // TODO
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void delBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delBtnActionPerformed
@@ -152,13 +159,11 @@ public class App extends javax.swing.JFrame {
         // delete from employee service
     }//GEN-LAST:event_delBtnActionPerformed
 
-    private Employee generateRandomEmployee() {
-        Random rand = new Random();
-        Employee emp = new Employee("Name " + rand.nextInt(1_000),
-                "Surname " + rand.nextInt(2_000),
-                "IDNP " + rand.nextInt(1_000_000));
-        return emp;
-    }
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+        // TODO
+        System.out.println("Edit should happen");
+    }//GEN-LAST:event_editBtnActionPerformed
+
 
     /**
      * @param args the command line arguments
