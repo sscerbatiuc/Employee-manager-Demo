@@ -6,7 +6,8 @@
 package com.tekwill.gui;
 
 import com.tekwill.model.Employee;
-import java.util.Random;
+import com.tekwill.service.InMemoryEmployeeService;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -16,6 +17,7 @@ import javax.swing.table.DefaultTableModel;
 public class App extends javax.swing.JFrame {
 
     DefaultTableModel tableModel;
+    private InMemoryEmployeeService employeeService;
 
     /**
      * Creates new form App
@@ -23,6 +25,7 @@ public class App extends javax.swing.JFrame {
     public App() {
         initComponents();
         tableModel = (DefaultTableModel) this.empTable.getModel();
+        employeeService = new InMemoryEmployeeService();
     }
 
     /**
@@ -40,6 +43,8 @@ public class App extends javax.swing.JFrame {
         editBtn = new javax.swing.JButton();
         delBtn = new javax.swing.JButton();
         showInConsoleBtn = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -79,6 +84,15 @@ public class App extends javax.swing.JFrame {
         });
 
         showInConsoleBtn.setText("Show in console");
+        showInConsoleBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showInConsoleBtnActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Export");
+
+        jButton2.setText("Import");
 
         jMenu1.setText("File");
 
@@ -109,7 +123,9 @@ public class App extends javax.swing.JFrame {
                     .addComponent(editBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(delBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(showInConsoleBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(showInConsoleBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -124,7 +140,11 @@ public class App extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(delBtn)
                         .addGap(50, 50, 50)
-                        .addComponent(showInConsoleBtn))
+                        .addComponent(showInConsoleBtn)
+                        .addGap(44, 44, 44)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -141,25 +161,31 @@ public class App extends javax.swing.JFrame {
         AddDialog addDialog = new AddDialog(this, isModal);
         addDialog.setVisible(true);
         Employee emp = addDialog.getResult();
+        // daca avem un astfel de employee in service, atunci nu adaugam nimic
         DefaultTableModel tableModel = (DefaultTableModel) this.empTable.getModel();
         tableModel.addRow(new Object[]{this.empTable.getRowCount() + 1, emp.getName(), emp.getSurname(), emp.getIdnp()});
         // transmit la employee service
-        // TODO
+        employeeService.add(emp);
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void delBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delBtnActionPerformed
         // check which row is selected
         DefaultTableModel tableModel = (DefaultTableModel) this.empTable.getModel();
         int selectedRow = this.empTable.getSelectedRow();
+        Employee removedEmployee = new Employee(tableModel.getValueAt(selectedRow, 1).toString(),
+                tableModel.getValueAt(selectedRow, 2).toString(),
+                tableModel.getValueAt(selectedRow, 3).toString());
+        // delete from employee service
+        employeeService.remove(removedEmployee);
+
         if (selectedRow != -1) {
             tableModel.removeRow(selectedRow);
         }
+        // delete the row
         // repetam
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             tableModel.setValueAt(i + 1, i, 0);
         }
-        // delete the row
-        // delete from employee service
     }//GEN-LAST:event_delBtnActionPerformed
 
     public int selectedRow() {
@@ -181,13 +207,17 @@ public class App extends javax.swing.JFrame {
         // 1. Afisam dialogul de editare.
         EditDialog editDialog = new EditDialog(this, true, emp);
         editDialog.setVisible(true);
-        
+
         // Citim valoarea modificata
         Employee editedEmployee = editDialog.getResult();
-        
+
         // Verificam daca s-au schimbat valorile
-         
+
     }//GEN-LAST:event_editBtnActionPerformed
+
+    private void showInConsoleBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showInConsoleBtnActionPerformed
+        employeeService.displayInConsole();
+    }//GEN-LAST:event_showInConsoleBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -229,6 +259,8 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JButton delBtn;
     private javax.swing.JButton editBtn;
     private javax.swing.JTable empTable;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;

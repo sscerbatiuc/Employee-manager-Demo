@@ -54,4 +54,22 @@ public class Employee {
         return "Employee{" + "name=" + name + ", surname=" + surname + ", idnp=" + idnp + '}';
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        System.out.println("Comparing Employee");
+        if (obj instanceof Employee) {
+            Employee compared = (Employee) obj;
+            return this.getName().equals(compared.getName())
+                    && this.getSurname().equals(compared.getSurname())
+                    && this.getIdnp().equals(compared.getIdnp());
+        }
+        return false;
+    }
+
 }
