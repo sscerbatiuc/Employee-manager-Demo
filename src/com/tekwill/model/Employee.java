@@ -11,6 +11,7 @@ package com.tekwill.model;
  */
 public class Employee {
 
+    private int id;
     private String name;
     private String surname;
     private String idnp;
@@ -23,6 +24,16 @@ public class Employee {
         this.name = name;
         this.surname = surname;
         this.idnp = idnp;
+    }
+
+    public Employee(int id, String name, String surname, String idnp) {
+        this(name, surname, idnp);
+        this.id = id;
+    }
+    
+    
+    public int getId() {
+        return id;
     }
 
     public String getName() {
